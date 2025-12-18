@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>VehiculeAziz - Notification</title>
+    <style>
+      body{font-family:Georgia,serif;background:#fff;color:#000;padding:20px}
+      h1{font-size:20px}
+      #list{margin-top:12px}
+      .item{padding:6px;border-bottom:1px solid #ddd}
+    </style>
+  </head>
+  <body>
+    <h1>VehiculeAziz - Notifications</h1>
+    <div>Server: <strong id="status">connecting…</strong></div>
+    <div id="list"></div>
+
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script>
+      const socket = io();
+      const status = document.getElementById('status');
+      const list = document.getElementById('list');
+
+      socket.on('connect', ()=>{ status.textContent='connected' });
+      socket.on('disconnect', ()=>{ status.textContent='disconnected' });
+
+      socket.on('vehicle_unavailable', (data)=>{
+        const d = document.createElement('div');
+        d.className='item';
+        d.textContent = 'Vehicle unavailable: ' + (data && data.id ? data.id : JSON.stringify(data));
+        list.insertBefore(d, list.firstChild);
+      });
+    </script>
+  </body>
+</html>
+hello<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>Chat en temps réel</title>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+  <script defer src="chat.js"></script>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    #messages div { margin: 5px 0; padding: 8px; background: #eee; border-radius: 5px; }
+  </style>
+</head>
+<body>
+  <h2>Chat NestJS</h2>
+  <div id="messages"></div>
+  <input id="content" placeholder="Votre message" />
+  <button id="send">Envoyer</button>
+</body>
+<script>
+    const socket = io('http://localhost:3000')
+    name=prompt("name user :")
+    socket.on('received',(data)=>{
+        const div=document.getElementById('messages')
+        const msg =document.createElement('div')
+        msg.innerText=`${data.name} : ${data.msg}`
+        div.appendChild(msg);
+
+    })
+    
+    document.getElementById('send').addEventListener('click',()=>{
+        const msg=document.getElementById('content').value
+        socket.emit('send',{msg,name})
+    })
+</script>
+</html>
